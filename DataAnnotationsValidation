@@ -86,4 +86,72 @@ public class User
         public const string PasswordMinimumSixLetters = "The Password must be at least 6 characters long and maximum of 18.";
         public const string PasswordShouldHaveAtleasetOneNumber = "The Password must have at least one number.";
     }
+    public class PasswordValidationTest
+    {
+
+        [Test]
+        public void Empty_Password_Should_Throw_Exception()
+        {
+            var passwordValidation = new PasswordValidation();
+            var password = string.Empty;
+            var message = string.Empty;
+            var exception = Assert.Throws<ArgumentNullException>(() => passwordValidation.ValidatePassword(password,out message));
+            Assert.That(exception.GetType().ToString(),Is.EqualTo("System.ArgumentNullException"));
+            Assert.That(exception.Message, Is.EqualTo("Password cannot be empty\r\nParameter name: password"));
+
+        }
+
+        [Test]
+        public void Password_Shouldbe_Atleast_6_Letters()
+        {
+            var passwordValidation = new PasswordValidation();
+            var password = "knnan";
+            var message = "";
+            var result = passwordValidation.ValidatePassword(password,out message);
+            Assert.IsFalse(result);
+            Assert.AreEqual(Constants.PasswordMinimumSixLetters,message);
+        }
+
+        [Test]
+        public void Password_Should_Not_Exceed_18_Letters()
+        {
+            var passwordValidation = new PasswordValidation();
+            var password = "kannankannankannankannankannan";
+            var message = "";
+            var result = passwordValidation.ValidatePassword(password, out message);
+            Assert.IsFalse(result);
+            Assert.AreEqual(Constants.PasswordMinimumSixLetters, message);
+        }
+        [Test]
+        public void Password_Should_Have_Atleaset_One_Upper()
+        {
+            var passwordValidation = new PasswordValidation();
+            var password = "kannan";
+            var message = "";
+            var result = passwordValidation.ValidatePassword(password, out message);
+            Assert.IsFalse(result);
+            Assert.AreEqual(Constants.PasswordShouldHaveNumericAndUpperCase, message);
+        }
+        [Test]
+        public void Password_Should_Have_Atleaset_One_Numeric()
+        {
+            var passwordValidation = new PasswordValidation();
+            var password = "Kannan";
+            var message = "";
+            var result = passwordValidation.ValidatePassword(password, out message);
+            Assert.IsFalse(result);
+            Assert.AreEqual(Constants.PasswordShouldHaveNumericAndUpperCase, message);
+        }
+        [Test]
+        public void Right_Password_Should_Validated_Successfully()
+        {
+            var passwordValidation = new PasswordValidation();
+            var password = "Kannan1";
+            var message = "";
+            var result = passwordValidation.ValidatePassword(password, out message);
+            Assert.IsTrue(result);
+             
+        }
+
+    }
 }
