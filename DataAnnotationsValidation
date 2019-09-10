@@ -1,0 +1,76 @@
+namespace Tests
+{
+    public class Tests
+    {
+        [SetUp]
+        public void Setup()
+        {
+            var user = new User();
+        }
+
+        [Test]
+        public void When_No_Password_Should_Throw_Required_Validation_Error()
+        {
+            var user = new User();
+            var validationResult = new List<ValidationResult>();
+            var actual = Validator.TryValidateObject(user, new ValidationContext(user), validationResult, true);
+            Assert.IsFalse(actual);
+            Assert.AreEqual(Constants.PasswordRequired, validationResult[0].ErrorMessage);
+        }
+
+        [Test]
+        public void When_No_Password_Should_Be_Atleast_six_Letters ()
+        {
+            var user = new User {Password = "Kan2"};
+            var validationResult = new List<ValidationResult>();
+            var actual = Validator.TryValidateObject(user, new ValidationContext(user), validationResult, true);
+            Assert.IsFalse(actual);
+            Assert.AreEqual(Constants.PasswordMinimumSixLetters, validationResult[0].ErrorMessage);
+        }
+
+        [Test]
+        public void When_No_Password_Should_CannotExceed_Atleast_18_Letters()
+        {
+            var user = new User { Password = "Kan2Kan2Kan2Kan2Kan2Kan2Kan2Kan2Kan2Kan2" };
+            var validationResult = new List<ValidationResult>();
+            var actual = Validator.TryValidateObject(user, new ValidationContext(user), validationResult, true);
+            Assert.IsFalse(actual);
+            Assert.AreEqual(Constants.PasswordMinimumSixLetters, validationResult[0].ErrorMessage);
+        }
+
+        [Test]
+        public void When_The_Password_Doe_Not_Have_Numeric_Throw_Error_Message()
+        {
+            var user = new User { Password = "Kannan" };
+            var validationResult = new List<ValidationResult>();
+            var actual = Validator.TryValidateObject(user, new ValidationContext(user), validationResult, true);
+            Assert.IsFalse(actual);
+            Assert.AreEqual(Constants.PasswordShouldHaveAtleasetOneNumber, validationResult[0].ErrorMessage);
+        }
+        [Test]
+        public void When_The_Password_Does_Not_Have_UpperCase_Throw_Error_Message()
+        {
+            var user = new User { Password = "kannan1" };
+            var validationResult = new List<ValidationResult>();
+            var actual = Validator.TryValidateObject(user, new ValidationContext(user), validationResult, true);
+            Assert.IsFalse(actual);
+            Assert.AreEqual(Constants.PasswordShouldHaveAtleasetOneNumber, validationResult[0].ErrorMessage);
+        }
+        [Test]
+        public void When_The_Password_Is_In_RightFormat_Should_Not_Throw_Error_Message()
+        {
+            var user = new User { Password = "Kannan1" };
+            var validationResult = new List<ValidationResult>();
+            var actual = Validator.TryValidateObject(user, new ValidationContext(user), validationResult, true);
+            Assert.IsTrue(actual);
+            Assert.AreEqual(0,validationResult.Count);
+        }
+    }
+
+    public static class Constants
+    {
+        public  const string PasswordRequired = "The Password field is required.";
+        public const string PasswordMinimumSixLetters = "The Password must be at least 6 characters long and maximum of 18.";
+        public const string PasswordShouldHaveAtleasetOneNumber = "The Password must have at least one number.";
+    }
+}
