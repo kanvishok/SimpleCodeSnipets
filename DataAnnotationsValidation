@@ -1,5 +1,18 @@
 namespace Tests
 {
+public class User
+    {
+
+        public string Username{ get; set; }
+
+        [Required]
+        [StringLength(18, ErrorMessage = "The {0} must be at least {2} characters long and maximum of {1}.", MinimumLength = 6)]
+        [RegularExpression(@"^((?=.*[a-z])(?=.*[A-Z])(?=.*\d)).+$", ErrorMessage = "The {0} must have at least one number.")]
+        [DataType(DataType.Password)]
+        [Display(Name = "Password")]
+        public string Password{ get; set; }
+    }
+    
     public class Tests
     {
         [SetUp]
